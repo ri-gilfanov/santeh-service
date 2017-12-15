@@ -1,0 +1,27 @@
+{% load admin_urls staticfiles %}
+<span class="big">
+    <a href="{% url 'category_list' %}">Каталог</a> /
+    {% if category_selected.parent %}
+        <a
+            href="{% url 'category_page' category_selected.parent.id %}"
+        >{{ category_selected.parent.name }}</a> /
+    {% endif %}
+    <a
+        href="{% url 'category_page' category_selected.id %}"
+    >{{ category_selected.name }}</a>
+</span>
+<h1>
+    <a href="{% url 'category_page' category_selected.id %}">
+        {{ category_selected.name }}
+    </a>
+</h1>
+{% if category_selected.is_list_view is True and category_selected.image %}
+    <p style="text-align: center;">
+        <img
+        alt="{{ category_selected.name }}"
+        src="{{ category_selected.image.url }}"
+        style="max-height: 10em;"
+        title="{{ category_selected.name }}"
+        >
+    </p>
+{% endif %}

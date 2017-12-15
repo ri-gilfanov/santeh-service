@@ -1,0 +1,126 @@
+<div
+    class="slider__wrapper"
+    style="
+        background-color: rgba(255,255,255,1.0);
+        border: 1px #cccccc solid;
+        display: none;
+        margin-top: 12px;
+        margin-bottom: 12px;
+    "
+>
+    <div class="slider__content">
+        {% for slide in slider.slides.all %}
+            {% if slide.link %}
+                <div class="slide" id="slide_{{ slide.pk }}" style="display: none;">
+                    <a href="{{ slide.link }}">
+                        <div style="text-align: center;">
+                            <img
+                                alt="{{ slide.text }}"
+                                src="{{ slide.image.url }}"
+                            />
+                        </div>
+                        {% if slide.text %}
+                            <p style="padding: 0px 5px 5px 5px">
+                                {{ slide.text }}
+                            </p>
+                        {% endif %}
+                    </a>
+                </div>
+            {% else %}
+                <div class="slide" id="slide_{{ slide.pk }}" style="display: none;">
+                    <div style="text-align: center;">
+                        <img
+                            alt="{{ slide.text }}"
+                            src="{{ slide.image.url }}"
+                        />
+                    </div>
+                    {% if slide.text %}
+                        <p style="padding: 0px 5px 5px 5px">
+                            {{ slide.text }}
+                        </p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div align=center>
+            <button
+                id="slider__previous"
+                style="margin: 7px;"
+            >«</button>
+            <button
+                id="slider__next"
+                style="margin: 7px;"
+            >»</button>
+    </div>
+</div>
+
+
+<script lang="javascript">
+    var start = 0;
+    var step = {{ slider.grouping }};
+    var end = $('.slide').length;
+    var index = 0
+    var timerId = NaN;
+    var autoplay_interval = 10000;
+
+    $( document ).ready(function() {
+        // Действия после загрузки страницы
+        if (end != 0) {
+            $('.category_nav__content').hide();
+            $('.slider__wrapper').show();
+            $('.slide').slice(start + index, start + index + step).fadeIn(1000);
+            timerId = setInterval(slider__autoplay, autoplay_interval);
+        };
+    });
+
+    function slider__autoplay(){
+        // Автопролистывание слайдера
+        $('.slider__content').fadeOut(1000, function() {
+            $('.slide').slice(start + index, start + index + step).hide();
+            if (index < end - step) {
+                index += step;
+            } else {
+                index = 0;
+            };
+            $('.slide').slice(start + index, start + index + step).show();
+            $('.slider__content').fadeIn(1000);
+        });
+    }
+
+    $('#slider__previous').click(function(){
+        // Переключение на выбранный слайд (написать)
+        clearInterval(timerId);
+        $('.slider__content').fadeOut(1000, function() {
+            $('.slide').slice(start + index, start + index + step).hide();
+            if (index < step) {
+                if (end % step) {
+                    index = Math.floor(end / step) * step;
+                } else {
+                    index = (Math.floor(end / step) - 1) * step;
+                };
+            } else {
+                index -= step;
+            };
+            $('.slide').slice(start + index, start + index + step).show();
+            $('.slider__content').fadeIn(1000);
+        });
+        timerId = setInterval(slider__autoplay, autoplay_interval);
+    });
+
+    $('#slider__next').click(function(){
+        // Переключение на выбранный слайд (написать)
+        clearInterval(timerId);
+        $('.slider__content').fadeOut(1000, function() {
+            $('.slide').slice(start + index, start + index + step).hide();
+            if (index < end - step) {
+                index += step;
+            } else {
+                index = 0;
+            };
+            $('.slide').slice(start + index, start + index + step).show();
+            $('.slider__content').fadeIn(1000);
+        });
+        timerId = setInterval(slider__autoplay, autoplay_interval);
+    });
+</script>

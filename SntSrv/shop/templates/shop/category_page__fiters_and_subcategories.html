@@ -1,0 +1,48 @@
+{% load admin_urls staticfiles %}
+<form
+    id="filter_form"
+    {% if category_selected %}
+        action="{% url 'category_page' category_selected.id %}"
+    {% else %}
+        action="{% url 'category_list' %}"
+    {% endif %}
+    method="GET"
+>
+    <ul style="font-family: Roboto-Light; font-size: 14px;">
+        {{ product_fiter_form.as_ul }}
+        <li><input class="filter_submit" type="submit" value="найти"></li>
+    </ul>
+</form>
+<script lang="javascript">
+    $('#filter_form').submit(function(){
+        if($("#id_search_query").val()=="") {
+            $("#id_search_query").attr("name", "");
+        };
+        if($("#id_brand").val()=="") {
+            $("#id_brand").attr("name", "");
+        };
+        if($("#id_price_max").val()=="") {
+            $("#id_price_max").attr("name", "");
+        };
+        if($("#id_price_min").val()=="") {
+            $("#id_price_min").attr("name", "");
+        };
+    });
+</script>
+{% if category_selected and category_selected.children.all %}
+    <h2 style=" font-size: 21px;">Подкатегории</h2>
+    <ul
+        class="big"
+        style="display: flex; flex-direction: column; flex-wrap: wrap; max-height: 10em;"
+    >
+        {% for subcategory in category_selected.children.all %}
+            <li
+                style="margin-left: 1em; padding: 0px; flex: 0 1 auto; color: #26aae1; font-family: Roboto-Light; font-size: 21px;"
+            >
+                <a href="{% url 'category_page' subcategory.id %}">
+                    {{ subcategory.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

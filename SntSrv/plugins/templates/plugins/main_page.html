@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block page_middle__content %}
+    <div class="page_middle__sidebar hide_for_small_display">
+        {% include "shop/category_nav_list.html" %}
+        {% include "plugins/slider.html" %}
+    </div>
+    <div class="page_middle__main_block_list">
+        <div class="page_middle__main_preview_list">
+            {% for category in category_list %}
+                {% if category.is_in_main_page %}
+                    <div class="category_preview">
+                        <p class="big">
+                            <a href="{% url 'category_page' category.id %}">
+                                {% if category.image %}
+                                    <img
+                                        alt="{{ category.name }}"
+                                        class="category_preview__image"
+                                        src="{{ category.image.url }}"
+                                        title="{{ category.name }}"
+                                    ><br/>
+                                {% endif %}
+                                {{ category }}
+                            </a>
+                        </p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock page_middle__content %}

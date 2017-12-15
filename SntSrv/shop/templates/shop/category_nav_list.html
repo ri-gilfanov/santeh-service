@@ -1,0 +1,28 @@
+<nav class="category_nav__content">
+    <ul class="category_list__list">
+        {% for category in category_list %}
+            <li
+                class="
+                    category_list__item
+                    {% if category == category_selected %}category_list__item__active{% endif %}
+            ">
+                <a href="{% url 'category_page' category.id %}">
+                    {{ category }}
+                </a>
+                    <ul class="category_list__sublist">
+                        {% for subcategory in category.children.all %}
+                            <li class="
+                                category_list__subitem
+                                {% if subcategory == category_selected %}category_list__subitem__active{% endif %}
+                                {% if category != category_selected and category_selected not in category.children.all %}hide_for_large_display{% endif %}
+                            ">
+                                <a href="{% url 'category_page' subcategory.id %}">
+                                    {{ subcategory.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>

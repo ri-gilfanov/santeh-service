@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block page_middle__content %}
+    <div class="page_middle__sidebar hide_for_small_display">
+        {% include "shop/category_nav_list.html" %}
+    </div>
+    <div class="content_block__wrapper">
+        <h1>{{ page_name }}</h1>
+        <form action="{% url 'log_in'%}" method="POST">
+        {% csrf_token %}
+        {{ auth_form }}
+        <input type="submit" value="войти">
+        </form>
+    </div>
+{% endblock page_middle__content %}

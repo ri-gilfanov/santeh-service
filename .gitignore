@@ -1,0 +1,10 @@
+*.pyc
+bin/
+lib/
+lib64
+pip-selfcheck.json
+pyvenv.cfg
+share/
+SntSrv/media/
+SntSrv/static/
+SntSrv.geany

@@ -1,0 +1,31 @@
+{% extends "admin/base_site.html" %}
+{% load i18n l10n admin_urls static %}
+
+{% block extrahead %}
+    {{ media }}
+    <script type="text/javascript" src="{% static 'admin/js/cancel.js' %}"></script>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; Изменить категорию выбранных товаров
+</div>
+{% endblock %}
+
+{% block content %}
+    <form
+        action=""
+        method="POST"
+    >
+        {% csrf_token %}
+        {{ form }}
+        <ul>{{ product_list|unordered_list }}</ul>
+        <input type="hidden" name="action" value="change_products_category" />
+        <input type="submit" name="apply" value="Сохранить" />
+    </form>
+{% endblock %}

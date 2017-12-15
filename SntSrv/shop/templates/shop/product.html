@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ product.name }} \ Категории{% endblock page_title %}
+
+{% block page_middle__content %}
+    <div class="page_middle__sidebar hide_for_small_display">
+        {% include "shop/category_nav_list.html" %}
+    </div>
+    <div class="content_block__wrapper">
+        {% if categories_selected.all %}
+            <nav class="big" style="margin-bottom: 12px;">
+                <a href="{% url 'category_list' %}">Каталог</a> /
+                {% for category_selected in categories_selected.all %}
+                    {% if category_selected.parent %}
+                        (<a
+                            href="{% url 'category_page' category_selected.parent.id %}"
+                        >{{ category_selected.parent.name }}</a> /
+                        <a
+                            href="{% url 'category_page' category_selected.id %}"
+                        >{{ category_selected.name }}</a>)
+                    {% else %}
+                        <a
+                            href="{% url 'category_page' category_selected.id %}"
+                        >{{ category_selected.name }}</a>
+                    {% endif %}
+                {% if category_selected.pk is categories_selected.all.last.pk %}
+                    /
+                {% else %}
+                    |
+                {% endif %}
+                {% endfor %}
+            </nav>
+        {% endif %}
+        <main class="page_middle__content_block">
+            <h1><a href="{% url 'product' product.id %}">{{ product.name }}</a></h1>
+            {% if product.image %}
+                <div class="page_middle__content_subblock">
+                        <p style="text-align: center;">
+                            <img
+                                alt="{{ product.name }}"
+                                class="product_preview__image"
+                                src="{{ product.image.url }}"
+                            >
+                        </p>
+                </div>
+            {% endif %}
+            <div class="page_middle__content_subblock">
+                {% if product.code %}
+                    <p>Код товара: {{ product.code }}</p>
+                {% endif %}
+                {% if product.is_in_stock == True %}
+                    <p class="product__price">Цена: {{ product.price }} руб.</p>
+                {% else %}
+                    <p class="product__price">Нет в продаже</p>
+                {% endif %}
+                <p>Вы можете уточнить цену и наличие товара в продаже у&nbsp;<a href="http://сантехсервис72.рф/контакты" target="_blank">консультантов</a>.</p>
+                
+                <form method="POST" class="product_preview__shopping_cart" style="max-width: 100% - 30px;">
+                    {% csrf_token %}
+                    <input
+                        name="product_pk_for_shopping_cart"
+                        type="hidden"
+                        value="{{ product.pk }}"
+                    />
+                    {% if product.pk|stringformat:'i' in request.session.shopping_cart %}
+                        <p>
+                            <input
+                                type="submit"
+                                    value="извлечь из корзины"
+                            />
+                        </p>
+                    {% else %}
+                        <p>
+                            <label>Количество</label>
+                            <input
+                                name="product_count_for_shopping_cart"
+                                type="number"
+                                min="1"
+                            />
+                        <input
+                            type="submit"
+                                value="добавить в корзину"
+                        />
+                        </p>
+                    {% endif %}
+                </form>
+            </div>
+            {% if product.description %}
+                <section class="page_middle__content_subblock">
+                        <h2>Описание</h2>
+                        {{ product.description|safe }}
+                </section>
+            {% endif %}
+            {% if product.characteristics %}
+                <section class="page_middle__content_subblock">
+                        <h2>Характеристики</h2>
+                        {{ product.characteristics|safe }}
+                </section>
+            {% endif %}
+        </main>
+    </div>
+{% endblock page_middle__content %}

@@ -1,0 +1,58 @@
+{% load admin_urls staticfiles %}
+<div class="page_middle__main_preview_list">
+    {% for product in paginator_page %}
+    <div class="product_preview">
+        {% if product.image %}
+            <p class="product_preview__image_paragrath" style="text-align: center;">
+                <a href="{% url 'product' product.id %}">
+                    <img
+                        alt="{{ product.name }}"
+                        class="product_preview__image"
+                        src="{{ product.image.url }}"
+                        title="Перейти к описанию товара {{ product.name }}"
+                    >
+                </a>
+            </p>
+        {% endif %}
+        <p class="product_preview__name">
+            <a href="{% url 'product' product.id %}">
+                {{ product.name }}
+            </a>
+        </p>
+        {% if product.is_in_stock == True %}
+            <p class="product_preview__price">Цена: {{ product.price }} руб.</p>
+        {% else %}
+            <p class="product_preview__price">Нет в продаже</p>
+        {% endif %}
+        <form method="POST" class="product_preview__shopping_cart" style="max-width: 100% - 30px;">
+            {% csrf_token %}
+            <input
+                name="product_pk_for_shopping_cart"
+                type="hidden"
+                value="{{ product.pk }}"
+            />
+            {% if product.pk|stringformat:'i' in request.session.shopping_cart %}
+                <input
+                    class="product_preview__is_in_shopping_cart"
+                    type="submit"
+                    value="извлечь из корзины"
+                />
+            {% else %}
+                <p style="margin-left: 12px; margin-right: 12px;">
+                    <label>количество</label>
+                    <input
+                        name="product_count_for_shopping_cart"
+                        type="number"
+                        min="1"
+                    />
+                </p>
+                <input
+                    class="product_preview__is_in_shopping_cart"
+                    type="submit"
+                    value="добавить в корзину"
+                />
+            {% endif %}
+        </form>
+    </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load shop_templatetags %}
+
+{% block page_title %}{% if category_selected %}{{ category_selected.name }} \ {% endif %}{% if category_selected.parent %}{{ category_selected.parent.name }} \ {% endif %}Каталог{% endblock page_title %}
+
+{% block page_middle__content %}
+
+<div class="page_middle__sidebar {% if category_selected %}hide_for_small_display{% endif %}">
+    {% include "shop/category_nav_list.html" %}
+</div>
+
+
+{% if category_selected.is_list_view is True %}
+<div class="content_block__wrapper">
+    <div class="page_middle__content_block">
+        <div class="page_middle__main_block_list {% if not category_selected %}hide_for_small_display{% endif %}">
+            <div class="page_middle__main_block">
+                {% if category_selected %}
+                    {% include "shop/category_page__top_links.html" %}
+                {% endif %}
+                {% include "shop/category_page__fiters_and_subcategories.html" %}
+                {% include "shop/product_list_paginator.html" %}
+                {% include "shop/category_page__products_table.html" %}
+            </div>
+            <div class="page_middle__main_block">
+                {% include "shop/product_list_paginator.html" %}
+            </div>
+        </div>
+    </div>
+
+
+{% else %}
+    <div class="page_middle__main_block_list {% if not category_selected %}hide_for_small_display{% endif %}">
+        <div class="page_middle__main_block">
+            {% if category_selected %}
+                {% include "shop/category_page__top_links.html" %}
+            {% endif %}
+            {% include "shop/category_page__fiters_and_subcategories.html" %}
+        </div>
+        <div class="page_middle__main_block">
+            {% include "shop/product_list_paginator.html" %}
+        </div>
+        {% include "shop/category_page__products_standart.html" %}
+        <div class="page_middle__main_block">
+            {% include "shop/product_list_paginator.html" %}
+        </div>
+{% endif %}
+
+
+{% endblock page_middle__content %}

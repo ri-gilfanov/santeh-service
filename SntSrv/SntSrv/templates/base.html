@@ -1,0 +1,173 @@
+{% load admin_urls staticfiles %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Руслан Ильясович Гильфанов (vk.com/ri_gilfanov)" lang="ru" />
+    <meta name="copyright" content="ООО «Премьер-Сити»" lang="ru" />
+    <meta name="yandex-verification" content="87b507cad7ee526f" />
+    <link rel="stylesheet" type="text/css" href="{% static '/styles.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static '/font-awesome-4.6.3/css/font-awesome.min.css' %}" />
+    <script type="text/javascript" src="{% static '/jquery-3.1.1.min.js' %}"></script>
+    <title>
+        {% block page_title %}{{ page_name }}{% endblock page_title %}
+        \\ СантехСервис — продажа и монтаж инженерной сантехники в г. Тюмень
+    </title>
+</head>
+{% spaceless %}
+<body>
+    <div class="page_header__wrapper">
+        <div class="page_header_content">
+            {% include "contacts.html" %}
+            <header class="page_header__logo">
+                <a href="{% url 'main_page' %}">
+                    <img
+                        alt="ООО «Сантехсервис»"
+                        src="{% static '/logo.png' %}"
+                        title="ООО «Сантехсервис»"
+                    >
+                </a>
+            </header>
+            <div class="page_header__auth hide_for_small_display">
+                <ul>
+                    {% if user.is_authenticated %}
+                        {% comment %}
+                            <li class="page_header__auth_item">
+                                <a href="">Личный кабинет</a>
+                            </li>
+                        {% endcomment %}
+                        {% if user.is_staff %}
+                            <li class="page_header__auth_item">
+                                <a href="{% url 'admin:index' %}">Управление</a>
+                            </li>
+                        {% endif %}
+                        <li class="page_header__auth_item">
+                            <a href="{% url 'log_out' %}">Выход</a>
+                        </li>
+                    {% else %}
+                        <li class="page_header__auth_item">
+                            <a href="{% url 'log_in' %}">Вход</a>
+                        </li>
+                        {% comment %}
+                            <li class="page_header__auth_item">
+                                <a href="">Регистрация</a>
+                            </li>
+                        {% endcomment %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="page_navigation_top__wrapper">
+        <div class="page_navigation_top__content">
+            <nav class="page_navigation_top__dirs">
+                <ul>
+                    <li class="page_navigation_top__item">
+                        <a
+                            title="Главная страница"
+                            class="fa fa-home page_navigation_top__item__icon"
+                            href="{% url 'main_page' %}"
+                        ></a>
+                    </li>
+                    {% for menu_item in main_menu.menu_items.all %}
+                        <li class="page_navigation_top__item">
+                            <a href="{{ menu_item.url }}">{{ menu_item.text }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+                <div class="page_navigation_top__service">
+                    <ul>
+                        <li class="page_navigation_top__item">
+                            {% if request.session.shopping_cart %}
+                                <a
+                                    class="fa fa-shopping-cart page_navigation_top__item__icon"
+                                    href="{% url 'shopping_cart' %}"
+                                    title="товаров в корзине {{ request.session.shopping_cart|length }}"
+                                >
+                                    {{ request.session.shopping_cart|length }}
+                                </a>
+                            {% else %}
+                                <a
+                                    class="fa fa-shopping-cart page_navigation_top__item__icon"
+                                    href="{% url 'shopping_cart' %}"
+                                    title="товаров в корзине 0"
+                                >
+                                    0
+                                </a>
+                            {% endif %}
+                        </li>
+                        {% comment %}
+                        <li class="page_navigation_top__item">
+                            <a
+                                class="fa fa-search page_navigation_top__item__icon"
+                                href="{% url 'main_page' %}"
+                            ></a>
+                        </li>
+                        {% endcomment %}
+                    </ul>
+                </div>
+        </div>
+    </div>
+
+    <div class="page_messages__wrapper">
+        {% if messages %}
+            <div class="page_messages__content">
+                {% for message in messages %}
+                <div {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message|safe }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="page_middle__wrapper">
+        <div class="page_middle__content">
+            {% block page_middle__content %}
+                
+            {% endblock page_middle__content %}
+        </div>
+    </div>
+    
+    <div class="page_navigation_bottom__wrapper">
+        <div class="page_navigation_bottom__content">
+            <div class="page_navigation_bottom__company_sites">
+                <p>Другие сайты компании</p>
+                <ul>
+                    {% for menu_item in sites_menu.menu_items.all %}
+                        <li class="page_navigation_bottom__company_sites_item">
+                            <a href="{{ menu_item.url }}">{{ menu_item.text }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="page_navigation_bottom__social_network">
+                <p>Мы в социальных сетях</p>
+                <ul class="page_navigation_bottom__social_network_menu">
+                    <li class="page_navigation_bottom__social_network_item">
+                        <a class="fa fa-vk" href="http://vk.com/" target="_blank"></a>
+                    </li>
+                    <li class="page_navigation_bottom__social_network_item">
+                        <a class="fa fa-facebook" href="http://facebook.com/" target="_blank"></a>
+                    </li>
+                    <li class="page_navigation_bottom__social_network_item">
+                        <a class="fa fa-twitter" href="http://twitter.com/" target="_blank"></a>
+                    </li>
+                    <li class="page_navigation_bottom__social_network_item">
+                        <a class="fa fa-odnoklassniki" href="http://ok.ru/" target="_blank"></a>
+                    </li>
+                </ul>
+            </div>
+            {% include "contacts.html" %}
+        </div>
+    </div>
+
+    <div class="page_footer__wrapper">
+        <div class="page_footer__content">
+            <p class="page_footer__copyright"><a href="https://vk.com/ri_gilfanov" target="_blank">&copy; 2016, Руслан Гильфанов (разработка сайта)</a></p>
+        </div>
+    </div>
+</body>
+{% endspaceless %}
+</html>

@@ -1,0 +1,39 @@
+{% if paginator_page.has_other_pages %}
+    <ul class="product_paginator__list">
+        {% if paginator_page.number > paginator_start_link %}
+            <li class="product_paginator__item__active">
+                {% if category_selected %}
+                    <a href="{% url 'category_page_paginator_page' category_selected.id paginator_range|first %}{{ GET_parameters }}">«</a>
+                {% else %}
+                    <a href="{% url 'category_list_paginator_page' paginator_range|first %}{{ GET_parameters }}">«</a>
+               {% endif %}
+            </li>
+        {% endif %}
+        {% for page in paginator_range %}
+            {% if paginator_start < page and page < paginator_end %}
+                {% if page != paginator_page.number %}
+                    <li class="product_paginator__item__active">
+                        {% if category_selected %}
+                            <a href="{% url 'category_page_paginator_page' category_selected.id page %}{{ GET_parameters }}">{{ page }}</a>
+                        {% else %}
+                            <a href="{% url 'category_list_paginator_page' page %}{{ GET_parameters }}">{{ page }}</a>
+                        {% endif %}
+                    </li>
+                {% else %}
+                    <li class="product_paginator__item__disactive">
+                        <span>{{ page }}</span>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        {% if paginator_page.number < paginator_end_link %}
+            <li class="product_paginator__item__active">
+                {% if category_selected %}
+                    <a href="{% url 'category_page_paginator_page' category_selected.id paginator_range|last %}{{ GET_parameters }}">»</a>
+                {% else %}
+                    <a href="{% url 'category_list_paginator_page' paginator_range|last %}{{ GET_parameters }}">»</a>
+                {% endif %}   
+            </li>
+        {% endif %}
+    </ul>
+{% endif %}

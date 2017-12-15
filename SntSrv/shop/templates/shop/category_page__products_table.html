@@ -1,0 +1,94 @@
+{% load admin_urls staticfiles %}
+<table class="shopping_cart__table" cellspacing="0">
+    <thead>
+        <tr class="shopping_cart__thead_tr">
+            <th class="shopping_cart__th">наименование</th>
+            <th class="shopping_cart__th">код</th>
+            <th class="shopping_cart__th">цена за шт.</th>
+            <th class="shopping_cart__th">количество</th>
+            <th class="shopping_cart__th"></th>
+        </tr>
+    </thead>
+    <tbody class="shopping_cart__tbody">
+        {% for product in paginator_page %}
+            <tr
+                class="
+                    shopping_cart__tbody_tr
+                    {% cycle 'shopping_cart__tr__second' 'shopping_cart__tr__first' %}
+                "
+            >
+                <td
+                    class="shopping_cart__td"
+                >
+                    <a href="{% url 'product' product.id %}">
+                        {{ product.name }}
+                    </a>
+                </td>
+                <td
+                    class="shopping_cart__td"
+                    style="text-align: right;"
+                    >{{ product.code }}</td>
+                <td
+                    class="shopping_cart__td"
+                    style="white-space: nowrap; text-align: right;"
+                >
+                    {% if product.is_in_stock == True %}
+                        {{ product.price }} руб.
+                    {% else %}
+                        Нет в продаже
+                    {% endif %}
+                </td>
+                <form method="POST">
+                {% if product.pk|stringformat:'i' in request.session.shopping_cart %}
+                    <td
+                        class="shopping_cart__td"
+                        style="text-align: right; white-space: nowrap;"
+                        >{{ product.count }} шт.
+                    </td>
+                    <td
+                        class="shopping_cart__td only_display_td"
+                        style="white-space: nowrap;"
+                    >
+                        {% csrf_token %}
+                        <input
+                            name="product_pk_for_shopping_cart"
+                            type="hidden"
+                            value="{{ product.pk }}"
+                        >
+                        <input
+                            type="submit"
+                                value="извлечь из корзины"
+                        />
+                    </td>
+                {% else %}
+                    <td
+                        class="shopping_cart__td only_display_td"
+                        style="white-space: nowrap; text-align: right;"
+                    >
+                        {% csrf_token %}
+                        <input
+                            name="product_pk_for_shopping_cart"
+                            type="hidden"
+                            value="{{ product.pk }}"
+                        >
+                        <input
+                            name="product_count_for_shopping_cart"
+                            type="number"
+                            min="1"
+                            style="width: calc(100% - 14px); margin: 0px;"
+                        />
+                    </td>
+                    <td
+                        class="shopping_cart__td only_display_td"
+                        style="white-space: nowrap;"
+                    >
+                        <input type="submit"
+                                value="добавить в корзину"
+                        />
+                    </td>
+                {% endif %}
+                </form>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

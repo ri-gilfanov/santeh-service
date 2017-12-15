@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block page_title %}Корзина покупателя{% endblock page_title %}
+
+{% block page_middle__content %}
+    <div class="page_middle__sidebar hide_for_small_display">
+        {% include "shop/category_nav_list.html" %}
+    </div>
+    <div class="content_block__wrapper" style="page-break-inside: auto;">
+        <div class="page_middle__content_block">
+            <h1><a href="{% url 'shopping_cart' %}">Корзина покупателя</a></h1>
+            <p>Вы можете распечатать список, добавленных в корзину, товаров.</p>
+            {% if product_list %}
+                <div style="text-align: right; padding: 0.5em;">
+                    <button class="fa fa-print" onclick="print_doc()">
+                        <span style="font-family: 'Roboto-Regular';"> печать</span>
+                    </button>
+                </div>
+                <table class="shopping_cart__table" cellspacing="0">
+                    <thead>
+                        <tr class="shopping_cart__thead_tr">
+                            <th class="shopping_cart__th">наименование</th>
+                            <th class="shopping_cart__th">код</th>
+                            <th class="shopping_cart__th">цена за шт.</th>
+                            <th class="shopping_cart__th">кол-во</th>
+                        </tr>
+                    </thead>
+                    <tbody class="shopping_cart__tbody">
+                        {% for product in product_list %}
+                            <tr
+                                class="
+                                    shopping_cart__tbody_tr
+                                    {% cycle 'shopping_cart__tr__first' 'shopping_cart__tr__second' %}
+                                "
+                            >
+                                <td
+                                    class="shopping_cart__td"
+                                >
+                                    <a href="{% url 'product' product.id %}">
+                                        {{ product.name }}
+                                    </a>
+                                </td>
+                                <td
+                                    class="shopping_cart__td"
+                                    style="text-align: right;"
+                                    >{{ product.code }}</td>
+                                <td
+                                    class="shopping_cart__td"
+                                    style="white-space: nowrap; text-align: right;"
+                                    >{{ product.price }} руб.</td>
+                                <td
+                                    class="shopping_cart__td"
+                                    style="text-align: right; white-space: nowrap;"
+                                    >{{ product.count }} шт.
+                                </td>
+                                <td
+                                    class="shopping_cart__td only_display_td"
+                                    style="white-space: nowrap;"
+                                >
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <input
+                                            name="product_pk_for_shopping_cart"
+                                            type="hidden"
+                                            value="{{ product.pk }}"
+                                        >
+                                            <input
+                                                type="submit"
+                                                {% if product.pk|stringformat:'i' in request.session.shopping_cart %}
+                                                    value="извлечь из корзины"
+                                                {% else %}
+                                                    value="добавить в корзину"
+                                                {% endif %}
+                                            />
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <th
+                                class="shopping_cart__td"
+                                colspan="2"
+                                >итого</th>
+                            <td
+                                class="shopping_cart__td"
+                                style="white-space: nowrap; text-align: right;"
+                                >{{ price_sum }} руб.</td>
+                            <td class="shopping_cart__td"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <script lang="javascript">
+                    function print_doc(){
+                        window.print();
+                    }
+                </script>
+            {% else %}
+                <p>Корзина покупателя пуста</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock page_middle__content %}

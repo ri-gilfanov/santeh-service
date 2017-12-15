@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block page_title %}Страница не найдена{% endblock page_title %}
+
+{% block page_middle__content %}
+    <div class="page_middle__sidebar hide_for_small_display">
+        {% include "shop/category_nav_list.html" %}
+        {% include "plugins/slider.html" %}
+    </div>
+    <div class="content_block__wrapper">
+        <main class="page_middle__content_block">
+            <h1>Страница не найдена</h1>
+            <p>Страница была удалена или её никогда не существовало.</p>
+            <p>Не расстраивайтесь, Вы можете продолжить работу с сайтом, воспользовавшись доступными ссылками:
+                <ul>
+                    <li>
+                        <a href="{% url 'main_page' %}">Главная</a>
+                    </li>
+                    {% for menu_item in main_menu.menu_items.all %}
+                        <li>
+                            <a href="{{ menu_item.url }}">{{ menu_item.text }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </p>
+        </main>
+    </div>
+{% endblock page_middle__content %}
